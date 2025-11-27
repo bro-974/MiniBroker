@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>13</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MiniBroker.Grpc.Client\MiniBroker.Grpc.Client.csproj" />
+    <ProjectReference Include="..\MiniBroker.Client.SourceGen\MiniBroker.Client.SourceGen.csproj"
+                      OutputItemType="Analyzer"
+    />
+  </ItemGroup>
+
+</Project>

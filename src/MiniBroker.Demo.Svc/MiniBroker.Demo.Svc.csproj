@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>13</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MiniBroker.Abstraction\MiniBroker.Abstraction.csproj" />
+    <ProjectReference Include="..\MiniBroker.Worker\MiniBroker.Worker.csproj" />
+  </ItemGroup>
+
+
+
+</Project>

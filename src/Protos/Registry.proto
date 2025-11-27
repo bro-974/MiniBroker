@@ -1,0 +1,29 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+option csharp_namespace = "Broker";
+
+package registry;
+
+service Registry {
+  rpc OpenEventStream(stream NotificationRequest) returns (stream MessageStreamProto);
+  rpc Send(MessageStreamProto) returns (google.protobuf.Empty);
+}
+
+message NotificationRequest {
+    string client_id = 1;
+    repeated string subscribed_types = 2;
+}
+
+message MessageStreamProto {
+    string id = 1;
+    bytes payload = 2;  
+    string type = 3;
+    ContextProto context = 4;
+}
+
+message ContextProto {
+    string source = 1;
+    string destinataire = 2;
+    bool persistMessage = 3;
+    int32 retryCount = 4;
+}
