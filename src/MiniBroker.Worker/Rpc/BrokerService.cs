@@ -59,14 +59,14 @@ public class BrokerService(ILogger<BrokerService> logger, MessageService message
         }
         catch (Exception ex)
         {
-            logger.LogError($"Error with client {clientId}: {ex.Message}");
+            logger.LogError("Error with client {clientId}: {Message}", clientId, ex.Message);
         }
         finally
         {
             // Do not disconnect the client if it's from a reconnection, and the previous stream is cleaned
             if (!string.IsNullOrEmpty(clientId) && context.CancellationToken.IsCancellationRequested)
             {
-                logger.LogInformation($"Client {clientId} logout.");
+                logger.LogInformation("Client {clientId} logout.", clientId);
                 messageService.Disconnect(clientId);
             }
         }
@@ -106,12 +106,12 @@ public class BrokerService(ILogger<BrokerService> logger, MessageService message
         {
             messageService.TryAddMessageToFailQueue(message);
             messageService.RemoveMessageFromQueue(message);
-            logger.LogWarning($"Message to {message.Context.Destinataire} moved to fail queue after {_maxRetry} retries");
+            logger.LogWarning("Message to {Destinataire} moved to fail queue after {maxRetry} retries", message.Context.Destinataire, _maxRetry);
         }
         else
         {
             await channel.Writer.WriteAsync(message, ct);
-            logger.LogInformation($"Retry {message.Context.RetryCount} for {message.Context.Destinataire}");
+            logger.LogInformation("Retry {RetryCount} for {Destinataire}", message.Context.RetryCount, message.Context.Destinataire);
         }
     }
 
@@ -121,7 +121,7 @@ public class BrokerService(ILogger<BrokerService> logger, MessageService message
         var clientStream = connection.TryGetClientStreamWriter(clientId);
         if (clientStream == null)
         {
-            logger.LogWarning($"Client {clientId} not connected.");
+            logger.LogWarning("Client {clientId} not connected.", clientId);
 
             if (addToCache)
                 messageService.TryAddMessageToQueue(request);
@@ -138,12 +138,12 @@ public class BrokerService(ILogger<BrokerService> logger, MessageService message
             };
 
             await clientStream.WriteAsync(notification);
-            logger.LogInformation($"Sent notification to {clientId}");
+            logger.LogInformation("Sent notification to {clientId}", clientId);
             return true;
         }
         catch (Exception ex)
         {
-            logger.LogError($"Error sending to client {clientId}: {ex.Message}");
+            logger.LogError("Error sending to client {clientId}: {Message}", clientId, ex.Message);
             messageService.Disconnect(clientId);
         }
 
@@ -157,7 +157,7 @@ public class BrokerService(ILogger<BrokerService> logger, MessageService message
         var clientStream = connection.TryGetClientStreamWriter(clientId);
         if (clientStream == null)
         {
-            logger.LogWarning($"Client {clientId} not connected.");
+            logger.LogWarning("Client {clientId} not connected.", clientId);
             return;
         }
 
@@ -177,11 +177,11 @@ public class BrokerService(ILogger<BrokerService> logger, MessageService message
             };
 
             await clientStream.WriteAsync(notification);
-            logger.LogInformation($"Sent notification to {clientId}: {message}");
+            logger.LogInformation("Sent notification to {clientId}: {message}", clientId, message);
         }
         catch (Exception ex)
         {
-            logger.LogError($"Error sending to client {clientId}: {ex.Message}");
+            logger.LogError("Error sending to client {clientId}: {message}", clientId, ex.Message);
             messageService.Disconnect(clientId);
         }
     }
@@ -192,7 +192,7 @@ public class BrokerService(ILogger<BrokerService> logger, MessageService message
     {
         var clientId = connection.AddClient(requestStream, responseStream, csSource);
         messageService.Connect(clientId, context);
-        logger.LogInformation($"Client {clientId} connected.");
+        logger.LogInformation("Client {clientId} connected.", clientId);
         await SendMessageFromServer(clientId, new SystemNotificationMessage { Message = $"Welcome {clientId}" });
         return clientId;
     }

@@ -58,7 +58,7 @@ public class MessageDispatcherService(
 
     public void ProcessMessage(MessageStreamProto response)
     {
-        logger.LogInformation($"Received message Type: {response.Type}");
+        logger.LogInformation("Received message Type: {MessageType}", response.Type);
         if (string.IsNullOrEmpty(response.Type))
         {
             logger.LogError("missing Type");
@@ -77,7 +77,7 @@ public class MessageDispatcherService(
 
         if (messageType == null)
         {
-            logger.LogError($"Unknown type {response.Type}");
+            logger.LogError("Unknown type {MessageType}", response.Type);
             return;
         }
 
@@ -110,7 +110,7 @@ public class MessageDispatcherService(
         var listener = provider.GetKeyedService<IHandleMessage>(messageType.FullName);
         if (listener == null)
         {
-            logger.LogError($"No listener found for type {messageType}.");
+            logger.LogError("No listener found for type {MessageType}.", messageType);
             return;
         }
 
